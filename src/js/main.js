@@ -363,11 +363,11 @@ function showPlayerList(bool) {
 function updateXYDisplay(x, y) {
 	if (misc.lastXYDisplay[0] !== x || misc.lastXYDisplay[1] !== y) {
 		misc.lastXYDisplay = [x, y];
-		if(!options.hexCoords) {
-			elements.xyDisplay.innerHTML = "X: " + x + ", Y: " + y;
-		} else {
-			elements.xyDisplay.innerHTML = "X: 0x" + x.toString(16) + ", Y: 0x" + y.toString(16);
+		if (options.hexCoords) {
+			x = (x < 0 ? "-" : "") + "0x" + Math.abs(x).toString(16);
+			y = (y < 0 ? "-" : "") + "0x" + Math.abs(y).toString(16);
 		}
+		elements.xyDisplay.innerHTML = "X: " + x + ", Y: " + y;
 		return true;
 	}
 	return false;
@@ -457,6 +457,7 @@ function showWorldUI(bool) {
 	elements.chatInput.style.display = "initial";
 	elements.paletteBg.style.visibility = bool ? "" : "hidden";
 	elements.helpButton.style.visibility = bool ? "" : "hidden";
+	elements.opm.style.transform = bool ? "initial" : "";
 }
 
 function showLoadScr(bool, showOptions) {
@@ -899,6 +900,7 @@ function init() {
 	options.hexCoords = elements.hexToggle.checked;
 
 	// Some cool custom css
+	console.log("%cOPM 2", "padding-left: 40px; font-size: 32px; line-height: 32px; font-weight: bold; background: url(https://daydun.com/opm/logo.png) no-repeat");
 	console.log("%c" +
 		" _ _ _         _   _    _____ ___    _____ _         _     \n" +
 		"| | | |___ ___| |_| |  |     |  _|  |  _  |_|_ _ ___| |___ \n" +
@@ -1152,6 +1154,8 @@ window.addEventListener("load", () => {
 	document.getElementById("help-close").addEventListener("click", function () {
 		document.getElementById("help").className = "hidden";
 	});
+	
+	elements.opm = document.getElementById("opm");
 
 	checkFunctionality(() => eventSys.emit(e.loaded));
 });
@@ -1184,3 +1188,5 @@ PublicAPI.poke = () => {
 	}
 };
 PublicAPI.muted = [];
+PublicAPI.net = net;
+PublicAPI.eventSys = eventSys;

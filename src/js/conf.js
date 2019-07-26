@@ -73,15 +73,15 @@ export const EVENTS = {
 	}
 };
 
-export const PUBLIC_EVENTS = {
+/*export const PUBLIC_EVENTS = {
 	loaded: EVENTS.loaded,
 	init: EVENTS.init,
 	tick: EVENTS.tick,
 	toolsInitialized: EVENTS.misc.toolsInitialized,
 	allChunksLoaded: EVENTS.net.chunk.allLoaded
-};
+};*/
 
-PublicAPI.events = PUBLIC_EVENTS;
+PublicAPI.events = EVENTS;
 
 let userOptions = {};
 if (storageEnabled()) {
@@ -95,13 +95,7 @@ if (storageEnabled()) {
 let shouldFool = (d => d.getMonth() == 3 && d.getDate() == 1)(new Date());
 
 export const options = propertyDefaults(userOptions, {
-	serverAddress: [/*{
-		default: !PRODUCTION_BUILD,
-		title: 'Localhost',
-		proto: 'old',
-		url: 'wss://dev.ourworldofpixels.com',
-		maxRetries: 1
-	},*/{
+	serverAddress: [{
 		default: true,
 		title: 'Official server',
 		proto: 'old',

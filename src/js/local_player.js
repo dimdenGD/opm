@@ -214,16 +214,16 @@ eventSys.on(e.net.sec.rank, newRank => {
 	switch (newRank) {
 		case RANK.USER:
 		case RANK.NONE:
-			showDevChat(false);
-			showPlayerList(false);
-			revealSecrets(false);
+			//showDevChat(false);
+			//showPlayerList(false);
+			//revealSecrets(false);
 			break;
 
 		case RANK.MODERATOR:
 		case RANK.ADMIN:
-			showDevChat(true);
-			showPlayerList(true);
-			revealSecrets(true);
+			//showDevChat(true);
+			//showPlayerList(true);
+			//revealSecrets(true);
 			break;
 	}
 	updateToolbar();

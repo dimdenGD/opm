@@ -149,7 +149,8 @@ function load(oncomplete) {
 			if(!--j) oncomplete();
 		});
 	};
-
+	
+	cursors.set.crossOrigin = "Anonymous";
 	cursors.set.src = options.toolSetUrl;
 }
 

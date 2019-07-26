@@ -15,8 +15,8 @@ const config = {
 	},
 	output: {
 		filename: '[name].js',
-		path: path.resolve(__dirname, 'dist'),
-		publicPath: '/'
+		path: path.resolve(__dirname, 'dist/ourworldofpixels.com'),
+		publicPath: 'https://opm.glitch.me/client/'
 	},
 	devServer: {
 		contentBase: false,
@@ -87,7 +87,6 @@ const config = {
 		}]
 	},
 	plugins: [
-		new CopyWebpackPlugin([{from: 'static'}]),
 		/*new webpack.optimize.CommonsChunkPlugin({
 			name: 'libs',
 			filename: 'libs.js',
@@ -113,7 +112,6 @@ module.exports = async env => {
 	if (!env.release) {
 		config.mode = "development";
 		config.devtool = "source-map";
-		config.output.publicPath = '/';
 	} else {
 		config.mode = "production";
 		config.output.filename = '[name].[hash].js';
