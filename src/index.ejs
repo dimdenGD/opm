@@ -6,8 +6,6 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1.0">
 		<meta name="description" content="Draw pixels with other people in real-time on an (almost) infinite canvas!">
 		<meta name="keywords" content="pixel, game, draw, online, cursors, canvas, world">
-		
-		<!-- <base href="https://opm.glitch.me/client/" /> -->
 
 		<style><%=require('./css/style.css')%></style>
 	</head>
@@ -80,8 +78,17 @@
 				<label><input id="hex-coords" type="checkbox">Hex coords</label>
 			</div>
 		</div>
-		<div id="opm">
-			<img class="icon" src="<%=require('./img/opm-2.png')%>" />
+		<div id="opm" class="packages">
+			<header id="opm-header">
+				<img src="<%=require('./img/opm-2.png')%>" />
+				<span class="title">OWOP Package Manager 2</span>
+			</header>
+			<main id="opm-packages-tab">
+				<ul id="opm-packages"></ul>
+			</main>
+			<main id="opm-details-tab">
+				
+			</main>
 		</div>
 	</body>
 </html>

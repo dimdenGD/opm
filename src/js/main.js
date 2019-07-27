@@ -19,6 +19,7 @@ import { net } from './networking.js';
 import { updateClientFx, player } from './local_player.js';
 import { resolveProtocols, definedProtos } from './protocol/all.js';
 import { windowSys, GUIWindow, OWOPDropDown, UtilDialog } from './windowsys.js';
+import { Opm } from "./opm.js";
 
 import { createContextMenu } from './context.js';
 
@@ -900,7 +901,7 @@ function init() {
 	options.hexCoords = elements.hexToggle.checked;
 
 	// Some cool custom css
-	console.log("%cOPM 2", "padding-left: 40px; font-size: 32px; line-height: 32px; font-weight: bold; background: url(https://daydun.com/opm/logo.png) no-repeat");
+	console.log("%cOPM 2", "padding-left: 40px; margin: 8px 0; font-size: 32px; line-height: 32px; font-weight: bold; background: url(https://daydun.com/opm/logo.png) no-repeat");
 	console.log("%c" +
 		" _ _ _         _   _    _____ ___    _____ _         _     \n" +
 		"| | | |___ ___| |_| |  |     |  _|  |  _  |_|_ _ ___| |___ \n" +
@@ -924,6 +925,8 @@ function init() {
 	}
 
 	misc.urlWorldName = worldName;
+	
+	PublicAPI.opm = new Opm();
 }
 
 function connect() {
@@ -1187,6 +1190,8 @@ PublicAPI.poke = () => {
 		net.protocol.lastSentX = Infinity;
 	}
 };
-PublicAPI.muted = [];
 PublicAPI.net = net;
+PublicAPI.muted = [];
+PublicAPI.misc = misc;
 PublicAPI.eventSys = eventSys;
+PublicAPI.require = id => require(`./${id}`);

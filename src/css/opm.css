@@ -1,22 +1,128 @@
 #opm {
+	display: flex;
+	flex-direction: column;
+	
 	position: absolute;
 	bottom: 0;
 	left: 450px;
-	width: 32px;
-	height: 32px;
-	padding: 8px;
+	width: 48px;
+	height: 48px;
 	margin: 8px;
-	border: 1px solid #000;
+	
+	border: 1px solid rgba(0, 0, 0, 0.6);
 	border-radius: 4px;
 	background-color: #b99664;
-	transition: width 200ms, height 200ms, transform 0.75s;
+	color: #fff;
+	text-shadow: 0 1px 0px #000;
 	
-	transform: translateY(200%);
+	overflow: hidden;
+	transition: width 300ms, height 300ms, transform 0.75s;
+	transition-timing-function: ease-in-out;
+	
+	/* transform: translateY(200%); */
 }
 #opm.open {
 	width: 500px;
 	height: 500px;
 }
-#opm > .icon {
+#opm > header {
+	position: relative;
+	width: 500px;
+	padding: 8px;
+	box-sizing: border-box;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+	
 	cursor: pointer;
+}
+#opm > header > .title {
+	position: absolute;
+	width: 100%;
+	left: 0;
+	line-height: 32px;
+	text-align: center;
+}
+#opm > header > #opm-close {
+	position: absolute;
+	right: 0;
+}
+#opm > main {
+	display: none;
+	flex: 1;
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+#opm.packages > #opm-packages-tab { display: block; }
+#opm.details > #opm-details-tab { display: block; }
+
+#opm-packages {
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	overflow-y: scroll;
+}
+#opm-packages > li {
+	display: flex;
+	position: relative;
+	margin: 8px;
+	background-color: #caa87a;
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	border-radius: 4px;
+	overflow: hidden;
+	cursor: pointer;
+	transition: background-color 200ms;
+}
+#opm-packages > li:hover {
+	background-color: #d4b181;
+}
+#opm-packages > li > img {
+	width: 128px;
+	height: 128px;
+}
+#opm-packages > li > .body {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+#opm-packages > li > .body > header > .title {
+	display: inline-block;
+	margin: 4px 8px;
+	font-size: 32px;
+}
+#opm-packages > li > .body > header > .version {
+	color: #948270;
+}
+#opm-packages > li > .body > header > .author {
+	float: right;
+	margin: 12px;
+}
+#opm-packages > li > .body > .description {
+	flex: 1;
+	margin: 0 8px;
+}
+#opm-packages > li > .body > footer {
+	padding: 8px;
+}
+#opm-packages > li > .body > footer > .categories {
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+#opm-packages > li > .body > footer > .categories > li {
+	display: inline-block;
+	margin-right: 8px;
+	padding: 6px;
+	background-color: rgba(0, 0, 0, 0.2);
+	border-radius: 3px;
+}
+#opm-packages > li > .body > footer > .install {
+	float: right;
+	background-color: #73b551;
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	border-radius: 3px;
+	padding: 6px 8px;
+	font: 16px pixel-op, sans-serif;
+	color: #fff;
+	text-shadow: 0 1px 0px #000;
 }

@@ -16,7 +16,7 @@ const config = {
 	output: {
 		filename: '[name].js',
 		path: path.resolve(__dirname, 'dist/ourworldofpixels.com'),
-		publicPath: 'https://opm.glitch.me/client/'
+		publicPath: "/" // "https://opm.glitch.me/client/"
 	},
 	devServer: {
 		contentBase: false,
