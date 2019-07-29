@@ -926,7 +926,7 @@ function init() {
 
 	misc.urlWorldName = worldName;
 	
-	PublicAPI.opm = new Opm();
+	window.OPM = new Opm();
 }
 
 function connect() {

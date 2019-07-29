@@ -116,7 +116,11 @@ button#opm-login {
 }
 #opm-packages > li > .body > header > .author {
 	float: right;
-	margin: 12px;
+	margin-top: 8px;
+	margin-right: 8px;
+	background-color: rgba(0, 0, 0, 0.2);
+	padding: 6px 8px;
+	border-radius: 3px;
 }
 #opm-packages > li > .body > .description {
 	flex: 1;
@@ -141,6 +145,10 @@ button#opm-login {
 #opm-packages > li > .body > footer > .install {
 	float: right;
 	background-color: #73b551;
+}
+#opm-packages > li > .body > footer > .uninstall {
+	float: right;
+	background-color: #7c81a9;
 }
 
 #opm-packages > button {
