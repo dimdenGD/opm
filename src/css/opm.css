@@ -1,3 +1,13 @@
+#opm button {
+	box-sizing: border-box;
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	border-radius: 3px;
+	padding: 6px 8px;
+	font: 16px pixel-op, sans-serif;
+	color: #fff;
+	text-shadow: 0 1px 0px #000;
+}
+
 #opm {
 	display: flex;
 	flex-direction: column;
@@ -41,10 +51,6 @@
 	line-height: 32px;
 	text-align: center;
 }
-#opm > header > #opm-close {
-	position: absolute;
-	right: 0;
-}
 #opm > main {
 	display: none;
 	flex: 1;
@@ -53,18 +59,20 @@
 
 #opm.packages > #opm-packages-tab { display: block; }
 #opm.details > #opm-details-tab { display: block; }
+#opm.upload > #opm-upload-tab { display: flex; }
 
+#opm-packages-tab {
+	overflow-y: scroll;
+}
 #opm-packages {
-	height: 100%;
-	padding: 0;
+	padding: 8px;
 	margin: 0;
 	list-style: none;
-	overflow-y: scroll;
 }
 #opm-packages > li {
 	display: flex;
 	position: relative;
-	margin: 8px;
+	margin-bottom: 8px;
 	background-color: #caa87a;
 	border: 1px solid rgba(0, 0, 0, 0.5);
 	border-radius: 4px;
@@ -78,6 +86,8 @@
 #opm-packages > li > img {
 	width: 128px;
 	height: 128px;
+	background-size: 128px 128px;
+	background-repeat: no-repeat;
 }
 #opm-packages > li > .body {
 	flex: 1;
@@ -119,10 +129,118 @@
 #opm-packages > li > .body > footer > .install {
 	float: right;
 	background-color: #73b551;
+}
+
+#opm-packages > button {
+	display: block;
+	width: 100%;
+	padding: 8px;
+	background-color: #73b551;
+}
+
+/* Upload */
+#opm-upload-tab {
+	flex-direction: column;
+	padding: 8px;
+	font-size: 0;
+}
+#opm-upload-tab > main {
+	flex: 1;
+}
+#opm-upload-tab > main > .package {
+	display: flex;
+}
+#opm-upload-tab > main > .package > .right {
+	flex: 1;
+	margin-left: 8px;
+}
+#opm-upload-tab input,
+#opm-upload-tab textarea {
+	margin-bottom: 8px;
+	padding: 4px;
+	background-color: #867050;
 	border: 1px solid rgba(0, 0, 0, 0.5);
 	border-radius: 3px;
-	padding: 6px 8px;
-	font: 16px pixel-op, sans-serif;
 	color: #fff;
-	text-shadow: 0 1px 0px #000;
+	font: 16px pixel-op, sans-serif;
+	transition: border-color 200ms;
+}
+#opm-upload-tab input::placeholder,
+#opm-upload-tab textarea::placeholder {
+	color: rgba(255, 255, 255, 0.5);
+}
+#opm-upload-tab input:focus,
+#opm-upload-tab textarea:focus {
+	outline: none;
+	border-color: #d8d8d8;
+}
+#opm-upload-image {
+	position: relative;
+	width: 128px;
+	height: 128px;
+	border-radius: 4px;
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	background-image: url(../img/placeholder.png);
+	background-size: 128px 128px;
+	background-repeat: no-repeat;
+}
+#opm-upload-image::after {
+	content: "Upload a thumbnail";
+	position: absolute;
+	width: 100%;
+	padding: 48px 0;
+	background-color: rgba(0, 0, 0, 0.4);
+	text-align: center;
+	color: #fff;
+	font: 16px pixel-op, sans-serif;
+	opacity: 0;
+	transition: opacity 200ms;
+}
+#opm-upload-image:hover::after {
+	opacity: 1;
+}
+#opm-upload-titlebar {
+	display: flex;
+}
+#opm-upload-name {
+	flex: 1;
+}
+#opm-upload-version {
+	width: 58px;
+	margin-left: 8px;
+}
+#opm-upload-description {
+	width: 100%;
+	height: 95px;
+	box-sizing: border-box;
+	resize: none;
+}
+#opm-upload-categories,
+#opm-upload-dependencies {
+	width: 100%;
+	box-sizing: border-box;
+}
+#opm-upload-script {
+	width: 100%;
+	box-sizing: border-box;
+}
+#opm-upload-status {
+	display: block;
+	text-align: center;
+	font-size: 16px;
+	text-shadow: 0 1px 0 #000, 1px 0 0 #000, -1px 0 0 #000, 0 -1px 0 #000;
+}
+#opm-upload-status.error {
+	color: #f56262;
+}
+#opm-upload-status.success {
+	color: #52fb59;
+}
+
+#opm-upload-cancel {
+	background-color: #d44a4a;
+}
+#opm-upload-upload {
+	float: right;
+	background-color: #4488dc;
 }

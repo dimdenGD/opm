@@ -89,6 +89,28 @@
 			<main id="opm-details-tab">
 				
 			</main>
+			<main id="opm-upload-tab">
+				<main>
+					<div class="package">
+						<div id="opm-upload-image"></div>
+						<div class="right">
+							<div id="opm-upload-titlebar">
+								<input id="opm-upload-name" type="text" placeholder="Name" />
+								<input id="opm-upload-version" type="text" placeholder="Version" />
+							</div>
+							<textarea id="opm-upload-description" placeholder="Description"></textarea>
+						</div>
+					</div>
+					<input id="opm-upload-categories" type="text" placeholder="Categories (comma separated)" />
+					<input id="opm-upload-dependencies" type="text" placeholder="Dependencies (comma separated)" />
+					<input id="opm-upload-script" type="file"></input>
+					<span id="opm-upload-status"></span>
+				</main>
+				<footer>
+					<button id="opm-upload-cancel">Cancel</button>
+					<button id="opm-upload-upload">Upload</button>
+				</footer>
+			</main>
 		</div>
 	</body>
 </html>

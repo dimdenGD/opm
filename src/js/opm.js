@@ -1,3 +1,5 @@
+const placeholder = require("../img/placeholder.png");
+
 export class Package {
 	constructor() {
 		
@@ -19,7 +21,10 @@ export class PackageItem {
 		this.element = document.createElement("li");
 		
 		let thumb = document.createElement("img");
-		thumb.src = data.thumb;
+		thumb.src = `https://opm.glitch.me/packages/${this.name}/thumb.png`;
+		thumb.addEventListener("error", () => {
+			thumb.src = placeholder;
+		});
 		this.element.appendChild(thumb);
 		
 		let body = document.createElement("div");
@@ -85,13 +90,118 @@ export class Opm {
 		];
 		this.element = document.getElementById("opm");
 		
+		this.tab = "packages";
+		
+		// Packages tab
 		this.packList = document.getElementById("opm-packages");
+		this.uploadButton = document.createElement("button");
+		this.uploadButton.textContent = "Upload script";
+		this.uploadButton.addEventListener("click", () => {
+			this.switchTab("upload");
+		});
+		
+		this.updatePackageList();
+		
+		// Upload tab
+		this.uploadThumbnail = null;
+		this.uploadScript = null;
+		document.getElementById("opm-upload-image").addEventListener("click", () => {
+			let input = document.createElement("input");
+			input.type = "file";
+			input.addEventListener("change", () => {
+				let reader = new FileReader();
+				reader.addEventListener("load", () => {
+					let data = reader.result;
+					if (!data.startsWith("data:image/png;base64,")) {
+						return;
+					}
+					document.getElementById("opm-upload-image").style.backgroundImage = `url(${data})`;
+					this.uploadThumbnail = data.slice(22);
+				});
+				reader.readAsDataURL(input.files[0]);
+			});
+			input.click();
+		});
+		document.getElementById("opm-upload-script").addEventListener("change", () => {
+			let reader = new FileReader();
+			reader.addEventListener("load", () => {
+				this.uploadScript = reader.result.split(",")[1];
+			});
+			reader.readAsDataURL(document.getElementById("opm-upload-script").files[0]);
+		});
+		document.getElementById("opm-upload-cancel").addEventListener("click", () => {
+			this.switchTab("packages");
+			document.getElementById("opm-upload-status").textContent = "";
+		});
+		document.getElementById("opm-upload-upload").addEventListener("click", () => {
+			let status = document.getElementById("opm-upload-status");
+			
+			let name = document.getElementById("opm-upload-name").value;
+			let version = document.getElementById("opm-upload-version").value;
+			let description = document.getElementById("opm-upload-description").value;
+			let categories = document.getElementById("opm-upload-categories").value;
+			let dependencies = document.getElementById("opm-upload-dependencies").value;
+			
+			if (!/^[a-z0-9\-]+$/.test(name)) {
+				status.className = "error";
+				status.textContent = "Name can only contain a-z 0-9 and dashes";
+				return;
+			}
+			if (!version) {
+				status.className = "error";
+				status.textContent = "Please provide a version";
+				return;
+			}
+			if (!this.uploadScript) {
+				status.className = "error";
+				status.textContent = "Please upload a script";
+				return;
+			}
+			
+			let xhttp = new XMLHttpRequest();
+			xhttp.open("POST", "https://opm.glitch.me/packages/" + name);
+			xhttp.setRequestHeader("Content-Type", "application/json");
+			xhttp.withCredentials = true;
+			xhttp.addEventListener("load", () => {
+				if (xhttp.status !== 200) {
+					status.className = "error";
+					status.textContent = xhttp.response;
+					return;
+				}
+				
+				status.className = "success";
+				status.textContent = "Upload successful, you script is awaiting approval";
+				
+				// Reset inputs
+				document.getElementById("opm-upload-image").style.backgroundImage = "";
+				document.getElementById("opm-upload-name").value = "";
+				document.getElementById("opm-upload-version").value = "";
+				document.getElementById("opm-upload-description").value = "";
+				document.getElementById("opm-upload-categories").value = "";
+				document.getElementById("opm-upload-dependencies").value = "";
+				document.getElementById("opm-upload-script").value = "";
+				this.uploadThumbnail = null;
+				this.uploadScript = null;
+			});
+			xhttp.send(JSON.stringify({
+				version: version,
+				description: description,
+				categories: categories ? categories.split(",") : [],
+				dependencies: dependencies ? dependencies.split(",") : [],
+				thumb: this.uploadThumbnail,
+				code: this.uploadScript
+			}));
+		});
 		
 		document.getElementById("opm-header").addEventListener("click", () => {
 			this.element.classList.toggle("open");
 		});
-		
-		this.updatePackageList();
+	}
+	
+	switchTab(tab) {
+		this.element.classList.remove(this.tab);
+		this.tab = tab;
+		this.element.classList.add(this.tab);
 	}
 	
 	updatePackageList() {
@@ -102,5 +212,6 @@ export class Opm {
 		this.packages.forEach(pkg => {
 			this.packList.appendChild(pkg.element);
 		});
+		this.packList.appendChild(this.uploadButton);
 	}
 }
