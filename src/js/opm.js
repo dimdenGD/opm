@@ -72,25 +72,20 @@ export class PackageItem {
 
 export class Opm {
 	constructor() {
-		this.packages = [
-			new PackageItem({
-				name: "package-1",
-				version: "1.0.0",
-				author: "author1",
-				description: "This is a cool package.",
-				categories: ["Script"]
-			}),
-			new PackageItem({
-				name: "package-2",
-				version: "1.5.0",
-				author: "author2",
-				description: "This is a cool package.",
-				categories: ["Theme", "Palette"]
-			})
-		];
+		this.packages = [];
 		this.element = document.getElementById("opm");
+		this.tab = "login";
 		
-		this.tab = "packages";
+		// Login tab
+		document.getElementById("opm-login").addEventListener("click", () => {
+			let win = window.open("https://opm.glitch.me/popup", "opm-login", "status=no,location=no,toolbar=no,menubar=no,width=500,height=720,top=100,left=100");
+			let interval = setInterval(() => {
+				if (!win.closed) return;
+				
+				clearInterval(interval);
+				this.attemptLogin();
+			}, 200);
+		});
 		
 		// Packages tab
 		this.packList = document.getElementById("opm-packages");
@@ -99,8 +94,6 @@ export class Opm {
 		this.uploadButton.addEventListener("click", () => {
 			this.switchTab("upload");
 		});
-		
-		this.updatePackageList();
 		
 		// Upload tab
 		this.uploadThumbnail = null;
@@ -158,6 +151,7 @@ export class Opm {
 				return;
 			}
 			
+			// Change to fetch
 			let xhttp = new XMLHttpRequest();
 			xhttp.open("POST", "https://opm.glitch.me/packages/" + name);
 			xhttp.setRequestHeader("Content-Type", "application/json");
@@ -195,6 +189,28 @@ export class Opm {
 		
 		document.getElementById("opm-header").addEventListener("click", () => {
 			this.element.classList.toggle("open");
+		});
+		
+		this.attemptLogin();
+	}
+	
+	attemptLogin() {
+		fetch("https://opm.glitch.me/users/me", {
+			credentials: "include"
+		}).then(a => a.json()).then(user => {
+			console.log(user);
+			this.switchTab("packages");
+			this.loggedIn();
+		}).catch(() => {
+			console.log("Failed to log in");
+			this.switchTab("login");
+		});
+	}
+	
+	loggedIn() {
+		fetch("https://opm.glitch.me/packages").then(a => a.json()).then(packages => {
+			this.packages = packages.map(a => new PackageItem(a));
+			this.updatePackageList();
 		});
 	}
 	

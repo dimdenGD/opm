@@ -57,9 +57,21 @@
 	background-color: rgba(0, 0, 0, 0.1);
 }
 
+#opm.login > #opm-login-tab { display: block; }
 #opm.packages > #opm-packages-tab { display: block; }
 #opm.details > #opm-details-tab { display: block; }
 #opm.upload > #opm-upload-tab { display: flex; }
+
+button#opm-login {
+	display: block;
+	width: 250px;
+	padding: 12px 0;
+	margin: 203px auto;
+	background-color: #7289da;
+	color: #fff;
+	border-radius: 3px;
+	text-decoration: none;
+}
 
 #opm-packages-tab {
 	overflow-y: scroll;
