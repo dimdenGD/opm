@@ -1,15 +1,5 @@
 const placeholder = require("../img/placeholder.png");
 
-export class Package {
-	constructor() {
-		
-	}
-	
-	destructor() {
-		
-	}
-}
-
 export class PackageItem {
 	constructor(data, installed) {
 		// General
@@ -18,6 +8,8 @@ export class PackageItem {
 		this.author = data.author;
 		this.description = data.description;
 		this.categories = data.categories;
+		this.dependencies = data.dependencies;
+		this.downloads = data.installs;
 		
 		// Personal
 		this.installed = installed;
@@ -76,6 +68,12 @@ export class PackageItem {
 		});
 		this.setInstalled(installed);
 		footer.appendChild(this.installBtn);
+		
+		this.downloadIndicator = document.createElement("span");
+		this.downloadIndicator.className = "downloads";
+		this.downloadIndicator.textContent = this.downloads;
+		footer.appendChild(this.downloadIndicator);
+		
 		body.appendChild(footer);
 		this.element.appendChild(body);
 		
@@ -89,22 +87,33 @@ export class PackageItem {
 		this.installBtn.textContent = value ? "Uninstall" : "Install";
 	}
 	
-	install() {
-		this.setInstalled(true);
-		
+	async install() {
 		if (!this.module) {
-			fetch(`https://opm.glitch.me/packages/${this.name}/main.js`).then(a => a.text()).then(script => {
+			// Install dependencies
+			for (let i=0; i<this.dependencies.length; i++) {
+				let dep = OPM.packages.find(a => a.name === this.dependencies[i]);
+				
+				if (dep.installed) continue;
+				
+				await dep.install();
+			}
+			
+			// Install script
+			try {
+				let script = await fetch(`https://opm.glitch.me/packages/${this.name}/main.js`).then(a => a.text());
 				this.module = eval(script);
-				this.runModule();
-			}).catch(error => {
+			} catch(error) {
 				alert("Error while installing script: " + error);
-			});
-		} else {
-			this.runModule();
+				return;
+			}
 		}
-	}
-	
-	runModule() {
+		
+		this.setInstalled(true);
+		if (!this.installed) {
+			this.downloads++;
+			this.downloadIndicator.textContent = this.downloads;
+		}
+		
 		this.module.install();
 		this.installed = true;
 		fetch(`https://opm.glitch.me/packages/${this.name}/install`, {credentials: "include"});
@@ -112,6 +121,8 @@ export class PackageItem {
 	
 	uninstall() {
 		this.setInstalled(false);
+		this.downloads--;
+		this.downloadIndicator.textContent = this.downloads;
 		
 		this.module.uninstall();
 		this.installed = false;
@@ -190,6 +201,11 @@ export class Opm {
 				status.textContent = "Name can only contain a-z 0-9 and dashes";
 				return;
 			}
+			if (name.length > 16) {
+				status.className = "error";
+				status.textContent = "Name can't be longer than 16 characters";
+				return;
+			}
 			if (!version) {
 				status.className = "error";
 				status.textContent = "Please provide a version";
@@ -197,7 +213,7 @@ export class Opm {
 			}
 			if (!this.uploadScript) {
 				status.className = "error";
-				status.textContent = "Please upload a script";
+				status.textContent = "Please provide a script";
 				return;
 			}
 			
@@ -244,12 +260,6 @@ export class Opm {
 		this.attemptLogin();
 	}
 	
-	static get Package() { return Package; }
-	register(name, module) {
-		let pkg = this.packages.find(a => a.name === name);
-		pkg.module = module;
-	}
-	
 	attemptLogin() {
 		fetch("https://opm.glitch.me/users/me", {
 			credentials: "include"
@@ -289,8 +299,10 @@ export class Opm {
 		});
 		this.packList.appendChild(this.uploadButton);
 	}
+	
+	// API
+	
+	require(name) {
+		return this.packages.find(a => a.name === name).module;
+	}
 }
-
-export const api = {
-	Package
-};

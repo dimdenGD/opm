@@ -71,7 +71,7 @@ button.winframe:active {
 	border-image: inherit;
 }
 
-.whitetext, #xy-display, #chat, #dev-chat, #playercount-display {
+.whitetext, #chat, #dev-chat, .top-bar {
 	color: #FFF;
 	font: 16px pixel-op, sans-serif;
 	text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;
@@ -221,26 +221,33 @@ button:focus {
 	top: 0;
 	left: 0;
 }
-#xy-display, #playercount-display, #palette {
+#top-bar, #palette {
 	position: absolute;
 	pointer-events: none;
 	transform: translateY(-100%);
 	transition: transform 0.75s;
 }
+#top-bar {
+	width: 100%;
+}
+.top-bar {
+	position: relative;
+	top: -4px;
+}
 #xy-display {
 	padding-left: 2px;
 	left: -4px;
-	top: -4px;
+	float: left;
 }
 #playercount-display {
 	right: -4px;
-	top: -4px;
+	float: right;
 }
 
 #toole-container {
 	overflow: hidden;
 }
-#playercount-display, #xy-display, #palette-create, #palette, .framed {
+#palette-create, #palette, .framed, .top-bar {
 	border: 5px #aba389 solid;
 	border-image: url(../img/small_border.png) 5 repeat;
 	border-image-outset: 1px;

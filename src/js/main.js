@@ -128,7 +128,7 @@ function getNewWorldApi() {
 	return obj;
 }
 
-function receiveMessage(text) {
+export function receiveMessage(text) {
 	console.log(text);
 	text = misc.chatRecvModifier(text);
 	if (!text) {
@@ -450,8 +450,7 @@ function logoMakeRoom(bool) {
 
 function showWorldUI(bool) {
 	misc.guiShown = bool;
-	elements.xyDisplay.style.transform = bool ? "initial" : "";
-	elements.playerCountDisplay.style.transform = bool ? "initial" : "";
+	elements.topBar.style.transform = bool ? "initial": "";
 	elements.palette.style.transform = bool ? "translateY(-50%)" : "";
 	elements.chat.style.transform = bool ? "initial" : "";
 	elements.chatInput.disabled = !bool;
@@ -498,7 +497,7 @@ function inGameDisconnected() {
 	elements.chatInput.style.display = "";
 }
 
-function retryingConnect(serverGetter, worldName) {
+export function retryingConnect(serverGetter, worldName) {
 	if (misc.connecting && !net.isConnected()) { /* We're already connected/trying to connect */
 		return;
 	}
@@ -1124,7 +1123,8 @@ window.addEventListener("load", () => {
 	elements.statusMsg = document.getElementById("status-msg");
 	elements.status = document.getElementById("status");
 	elements.logo = document.getElementById("logo");
-
+	
+	elements.topBar = document.getElementById("top-bar");
 	elements.xyDisplay = document.getElementById("xy-display");
 	elements.devChat = document.getElementById("dev-chat");
 	elements.chat = document.getElementById("chat");

@@ -9,16 +9,20 @@ export class Bucket {
 		this.infinite = false;
 	}
 	
-	canSpend(count) {
-		if (this.infinite) {
-			return true;
-		}
-		
+	update() {
 		this.allowance += (Date.now() - this.lastCheck) / 1000 * (this.rate / this.time);
 		this.lastCheck = Date.now();
 		if (this.allowance > this.rate) {
 			this.allowance = this.rate;
 		}
+	}
+	
+	canSpend(count) {
+		if (this.infinite) {
+			return true;
+		}
+		
+		this.update();
 		if (this.allowance < count) {
 			return false;
 		}
