@@ -1,4 +1,5 @@
 const placeholder = require("../img/placeholder.png");
+import { EVENTS } from "./conf.js";
 
 export class PackageItem {
 	constructor(data, installed) {
@@ -12,7 +13,7 @@ export class PackageItem {
 		this.downloads = data.installs;
 		
 		// Personal
-		this.installed = installed;
+		this.installed = false;
 		
 		// DOM
 		this.element = document.createElement("li");
@@ -66,7 +67,7 @@ export class PackageItem {
 				this.install();
 			}
 		});
-		this.setInstalled(installed);
+		this.setInstalled(false);
 		footer.appendChild(this.installBtn);
 		
 		this.downloadIndicator = document.createElement("span");
@@ -76,10 +77,6 @@ export class PackageItem {
 		
 		body.appendChild(footer);
 		this.element.appendChild(body);
-		
-		if (this.installed) {
-			this.install();
-		}
 	}
 	
 	setInstalled(value) {
@@ -88,16 +85,16 @@ export class PackageItem {
 	}
 	
 	async install() {
-		if (!this.module) {
-			// Install dependencies
-			for (let i=0; i<this.dependencies.length; i++) {
-				let dep = OPM.packages.find(a => a.name === this.dependencies[i]);
-				
-				if (dep.installed) continue;
-				
-				await dep.install();
-			}
+		// Install dependencies
+		for (let i=0; i<this.dependencies.length; i++) {
+			let dep = OPM.packages.find(a => a.name === this.dependencies[i]);
 			
+			if (dep.installed) continue;
+			
+			await dep.install();
+		}
+		
+		if (!this.module) {
 			// Install script
 			try {
 				let script = await fetch(`https://opm.glitch.me/packages/${this.name}/main.js`).then(a => a.text());
@@ -109,14 +106,14 @@ export class PackageItem {
 		}
 		
 		this.setInstalled(true);
-		if (!this.installed) {
+		if (!OPM.installed.includes(this.name)) {
 			this.downloads++;
 			this.downloadIndicator.textContent = this.downloads;
+			fetch(`https://opm.glitch.me/packages/${this.name}/install`, {credentials: "include"});
 		}
 		
-		this.module.install();
 		this.installed = true;
-		fetch(`https://opm.glitch.me/packages/${this.name}/install`, {credentials: "include"});
+		await this.module.install();
 	}
 	
 	uninstall() {
@@ -126,6 +123,7 @@ export class PackageItem {
 		
 		this.module.uninstall();
 		this.installed = false;
+		OPM.installed.splice(OPM.installed.indexOf(this.name), 1);
 		fetch(`https://opm.glitch.me/packages/${this.name}/uninstall`, {credentials: "include"});
 	}
 }
@@ -257,7 +255,9 @@ export class Opm {
 			this.element.classList.toggle("open");
 		});
 		
-		this.attemptLogin();
+		OWOP.once(EVENTS.net.world.join, () => {
+			this.attemptLogin();
+		});
 	}
 	
 	attemptLogin() {
@@ -277,8 +277,14 @@ export class Opm {
 	}
 	
 	reloadPackages() {
-		fetch("https://opm.glitch.me/packages").then(a => a.json()).then(packages => {
-			this.packages = packages.map(a => new PackageItem(a, this.installed.includes(a.name)));
+		fetch("https://opm.glitch.me/packages").then(a => a.json()).then(async packages => {
+			this.packages = packages.map(a => new PackageItem(a));
+			for (let i=0; i<this.packages.length; i++) {
+				let pkg = this.packages[i];
+				if (!pkg.installed && this.installed.includes(pkg.name)) {
+					await pkg.install();
+				}
+			}
 			this.updatePackageList();
 		});
 	}

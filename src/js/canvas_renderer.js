@@ -229,6 +229,7 @@ export function drawText(ctx, str, x, y, centered){
 	ctx.globalAlpha = 1;
 	ctx.fillText(str, x, y);
 }
+renderer.drawText = drawText;
 
 function isVisible(x, y, w, h) {
 	var cx    = camera.x;
@@ -412,24 +413,27 @@ function renderPlayer(targetPlayer, fontsize) {
 
 
 	if (fontsize > 3) {
-		var idstr = targetPlayer.id;
-		var textw = ctx.measureText(idstr).width + (zoom / 2);
-
-		ctx.globalAlpha = 1;
-		ctx.fillStyle = targetPlayer.clr;
-		ctx.fillRect(cx, cy + toolheight, textw, zoom);
-		ctx.globalAlpha = 0.2;
-		ctx.lineWidth = 3;
-		ctx.strokeStyle = "#000000";
-		ctx.strokeRect(cx, cy + toolheight, textw, zoom);
-		ctx.globalAlpha = 1;
-		drawText(ctx, idstr, cx + zoom / 4, cy + fontsize + toolheight + zoom / 8);
+		renderer.renderPlayerId(ctx, fontsize, zoom, cx, cy + toolheight, targetPlayer.id, targetPlayer.clr);
 	}
 
 	ctx.drawImage(tool.cursor, cx, cy, toolwidth, toolheight);
 
 	return x === targetPlayer.endX && y === targetPlayer.endY;
 }
+
+renderer.renderPlayerId = function(ctx, fontsize, zoom, x, y, id, color) {
+	var textw = ctx.measureText(id).width + (zoom / 2);
+
+	ctx.globalAlpha = 1;
+	ctx.fillStyle = color;
+	ctx.fillRect(x, y, textw, zoom);
+	ctx.globalAlpha = 0.2;
+	ctx.lineWidth = 3;
+	ctx.strokeStyle = "#000000";
+	ctx.strokeRect(x, y, textw, zoom);
+	ctx.globalAlpha = 1;
+	drawText(ctx, id, x + zoom / 4, y + fontsize + zoom / 8);
+};
 
 function requestRender(type) {
 	rendererValues.updateRequired |= type;

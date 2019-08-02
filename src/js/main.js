@@ -900,7 +900,7 @@ function init() {
 	options.hexCoords = elements.hexToggle.checked;
 
 	// Some cool custom css
-	console.log("%cOPM 2", "padding-left: 40px; margin: 8px 0; font-size: 32px; line-height: 32px; font-weight: bold; background: url(https://daydun.com/opm/logo.png) no-repeat");
+	console.log("%cOPM 2", "padding-left: 40px; margin: 8px 0; font-size: 32px; line-height: 32px; font-weight: bold; background: url(https://opm.glitch.me/logo.png) no-repeat");
 	console.log("%c" +
 		" _ _ _         _   _    _____ ___    _____ _         _     \n" +
 		"| | | |___ ___| |_| |  |     |  _|  |  _  |_|_ _ ___| |___ \n" +
@@ -964,15 +964,17 @@ function connect() {
 	//delete window.localStorage;
 }
 
-eventSys.once(e.loaded, () => statusMsg(true, "Initializing..."));
+eventSys.once(e.loaded, function() {
+	statusMsg(true, "Initializing...");
+	init();
+});
 eventSys.once(e.misc.loadingCaptcha, () => statusMsg(true, "Trying to load captcha..."));
 eventSys.once(e.misc.logoMakeRoom, () => {
 	statusMsg(false, null);
 	logoMakeRoom();
 });
 
-eventSys.once(e.loaded, function() {
-	init();
+eventSys.once(e.misc.toolsInitialized, function() {
 	if (misc.showEUCookieNag) {
 		windowSys.addWindow(new UtilDialog('Cookie notice',
 `This box alerts you that we're going to use cookies!
@@ -1194,4 +1196,9 @@ PublicAPI.net = net;
 PublicAPI.muted = [];
 PublicAPI.misc = misc;
 PublicAPI.eventSys = eventSys;
-PublicAPI.require = id => require(`./${id}`);
+PublicAPI.require = function(name) {
+	if (name === "events") {
+		return require("events");
+	}
+	return require(`./${name}`);
+}

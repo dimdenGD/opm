@@ -41,11 +41,14 @@ export function updateToolbar(win = toolsWindow) {
 	};
 
 	container.innerHTML = "";
-
+	
+	let visibleTools = 0;
+	
 	// Add tools to the tool-select menu
 	for (const name in tools) {
 		var tool = tools[name];
 		if (player.rank >= tool.rankRequired) {
+			visibleTools++;
 			var element = document.createElement("button");
 			var mask = document.createElement("div");
 			setTooltip(element, tool.name + " tool");
@@ -62,6 +65,8 @@ export function updateToolbar(win = toolsWindow) {
 			container.appendChild(element);
 		}
 	}
+	
+	container.style.maxWidth = Math.ceil(visibleTools / 8) * 40 + "px";
 }
 
 export function showToolsWindow(bool) {
@@ -1443,7 +1448,6 @@ eventSys.once(e.misc.toolsRendered, () => {
 eventSys.once(e.init, () => {
 	toolsWindow = new GUIWindow('Tools', {}, wdow => {
 		wdow.container.id = "toole-container";
-		wdow.container.style.cssText = "max-width: 40px";
 	}).move(5, 32);
 });
 

@@ -59,6 +59,7 @@ export class Player {
         this._y.val = y;
         /* TODO: fix weird bug (caused by connecting before tools initialized?) */
         //console.log(tool)
+        if (!tools[tool]) console.log(tools);
         this.tool = tools[tool] || tools['cursor'];
         this.fx.setRenderer((this.tool || {}).fxRenderer ); // temp until fix: || {}
         this.fx.setVisible(misc.world.validMousePos(
