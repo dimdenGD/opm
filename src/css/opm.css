@@ -37,13 +37,14 @@
 }
 #opm > header {
 	position: relative;
-	width: 600px;
+	width: 100%;
 	padding: 8px;
 	box-sizing: border-box;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-	
+	z-index: 3;
 	cursor: pointer;
 }
+
 #opm > header > .title {
 	position: absolute;
 	width: 100%;
@@ -61,6 +62,7 @@
 #opm.packages > #opm-packages-tab { display: block; }
 #opm.details > #opm-details-tab { display: block; }
 #opm.upload > #opm-upload-tab { display: flex; }
+#opm.deposit > #opm-deposit-tab { display: flex; }
 
 button#opm-login {
 	display: block;
@@ -145,6 +147,12 @@ button#opm-login {
 	float: right;
 	background-color: #73b551;
 }
+
+#opm-packages > li > .body > footer > .buy {
+    float: right;
+    background-color: #a768b5;
+}
+
 #opm-packages > li > .body > footer > .uninstall {
 	float: right;
 	background-color: #7c81a9;
@@ -270,10 +278,74 @@ button#opm-login {
 	color: #52fb59;
 }
 
-#opm-upload-cancel {
+#opm-upload-cancel, #opm-deposit-back {
 	background-color: #d44a4a;
 }
+
+#opm-deposit-back {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+}
+
 #opm-upload-upload {
 	float: right;
 	background-color: #4488dc;
+}
+
+#opm-bal {
+    float: right;
+    right: 20px;
+    border-radius: 3px;
+    background-color: #a88773;
+    padding-left: 3px;
+    margin-top: 3px;
+}
+
+#opm-deposit-btn {
+    background-color: #6fee87;
+    border: none;
+    border-radius: 0;
+    padding: 3px;
+    z-index: 10;
+}
+
+#opm-user-balance::before {
+content: "";
+display: inline-block;
+width: 16px;
+height: 20px;
+background-image: url(../img/coin.png);
+}
+
+#opm-deposit-tab {
+    flex-direction: column;
+    padding: 8px;
+}
+#opm-deposit-tab > main {
+    flex: 1;
+}
+
+#opm-deposit-tab input,
+#opm-deposit-tab textarea,
+#opm-deposit-tab select {
+    margin-bottom: 8px;
+    padding: 4px;
+    background-color: #867050;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 3px;
+    color: #543f27;
+    font: 16px pixel-op, sans-serif;
+    transition: border-color 200ms;
+}
+
+#opm-deposit-tab input::placeholder {
+    color: #543f27;
+}
+
+#opm-upload-warn {
+	display: block;
+    text-align: center;
+    font-size: 16px;
+    text-shadow: 0 1px 0 #000, 1px 0 0 #000, -1px 0 0 #000, 0 -1px 0 #000;
 }
