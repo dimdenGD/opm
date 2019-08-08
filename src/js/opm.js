@@ -1,8 +1,30 @@
 const placeholder = require("../img/placeholder.png");
 import { EVENTS } from "./conf.js";
 
+function copyToClipboard(text) {
+    if (window.clipboardData && window.clipboardData.setData) {
+        // IE specific code path to prevent textarea being shown while dialog is visible.
+        return clipboardData.setData("Text", text);
+
+    } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+        var textarea = document.createElement("textarea");
+        textarea.textContent = text;
+        textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+        } catch (ex) {
+            console.warn("Copy to clipboard failed.", ex);
+            return false;
+        } finally {
+            document.body.removeChild(textarea);
+        }
+    }
+}
+
 export class PackageItem {
-	constructor(data, installed) {
+	constructor(data, boughtScripts) {
 		// General
 		this.name = data.name;
 		this.version = data.version;
@@ -11,6 +33,7 @@ export class PackageItem {
 		this.categories = data.categories;
 		this.dependencies = data.dependencies;
 		this.downloads = data.installs;
+		this.cost = data.cost;
 		
 		// Personal
 		this.installed = false;
@@ -61,6 +84,19 @@ export class PackageItem {
 		
 		this.installBtn = document.createElement("button");
 		this.installBtn.addEventListener("click", () => {
+		    if(this.installBtn.className === "buy") return confirm(`Are you sure?`) ? fetch("https://opm.glitch.me/buy", {
+		        method: "POST",
+                credentials: "include",
+                body: JSON.stringify({ name: this.name, imSure: true }),
+                headers: {
+		            'Content-Type': "application/json"
+                }
+            }).then(i => {
+                if(i.status === 200) {
+                    this.setInstalled(false);
+                    document.getElementById('opm-user-balance').innerText = parseInt(document.getElementById('opm-user-balance').innerText) - this.cost;
+                } else alert("Not enough coins.");
+            }) : false;
 			if (this.installed) {
 				this.uninstall();
 			} else {
@@ -68,13 +104,17 @@ export class PackageItem {
 			}
 		});
 		this.setInstalled(false);
-		footer.appendChild(this.installBtn);
-		
-		this.downloadIndicator = document.createElement("span");
-		this.downloadIndicator.className = "downloads";
-		this.downloadIndicator.textContent = this.downloads;
-		footer.appendChild(this.downloadIndicator);
-		
+
+        footer.appendChild(this.installBtn);
+
+        this.downloadIndicator = document.createElement("span");
+        this.downloadIndicator.className = "downloads";
+        this.downloadIndicator.textContent = this.downloads;
+        footer.appendChild(this.downloadIndicator);
+        if(this.cost && this.cost > 0 && boughtScripts.indexOf(this.name) === -1) {
+            this.installBtn.className = "buy";
+            this.installBtn.textContent = `Buy for ${this.cost}`;
+        }
 		body.appendChild(footer);
 		this.element.appendChild(body);
 	}
@@ -97,9 +137,10 @@ export class PackageItem {
 		if (!this.module) {
 			// Install script
 			try {
-				let script = await fetch(`https://opm.glitch.me/packages/${this.name}/main.js`).then(a => a.text());
+				let script = await fetch(`https://opm.glitch.me/packages/${this.name}/main.js`, {credentials: "include"}).then(a => a.text());
 				this.module = eval(script);
 			} catch(error) {
+			    console.log(error);
 				alert("Error while installing script: " + error);
 				return;
 			}
@@ -134,10 +175,10 @@ export class Opm {
 		this.installed = [];
 		this.element = document.getElementById("opm");
 		this.tab = "login";
-		
+
 		// Login tab
 		document.getElementById("opm-login").addEventListener("click", () => {
-			let win = window.open("https://opm.glitch.me/popup", "opm-login", "status=no,location=no,toolbar=no,menubar=no,width=500,height=720,top=100,left=100");
+			let win = window.open("https://opm.glitch.me/popup", "opm-login", "status=no,location=no,toolbar=no,menubar=no,width=500,height=700,top=100,left=100");
 			let interval = setInterval(() => {
 				if (!win.closed) return;
 				
@@ -153,7 +194,46 @@ export class Opm {
 		this.uploadButton.addEventListener("click", () => {
 			this.switchTab("upload");
 		});
-		
+
+        // Deposit tab
+        document.getElementById("opm-deposit-qiwi").addEventListener("click", () => {
+            window.open("https://qiwi.me/opm", "_blank");
+        });
+        document.getElementById("opm-deposit-payeer").addEventListener("click", () => {
+            window.open("https://payeer.com/ru/account/send/", "_blank");
+        });
+        document.getElementById("opm-deposit-input").addEventListener("keydown", async e => {
+            if(e.key === "Enter") fetch("https://opm.glitch.me/redeem", {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify({
+                    type: document.getElementById("opm-deposit-type").value,
+                    transactionId: document.getElementById("opm-deposit-input").value
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(async i => {
+                if(i.status === 200) {
+                    document.getElementById("opm-deposit-status").innerText = "Thank you!";
+                    document.getElementById("opm-deposit-status").style.color = "green";
+                    let user = fetch("https://opm.glitch.me/users/me", {credentials: "include"}).then(i => {return i.json}).then(user => {
+                        document.getElementById("opm-user-balance").innerText = user.balance;
+                    });
+                } else {
+                    document.getElementById("opm-deposit-status").innerText = "Something went wrong.";
+                    document.getElementById("opm-deposit-status").style.color = "red";
+                }
+            })
+        });
+
+        document.getElementById("opm-deposit-btn").addEventListener("click", () => {
+			if(this.tab === "login") return;
+            this.switchTab("deposit");
+            this.element.classList.toggle("open");
+        });
+        document.getElementById("opm-deposit-copy").addEventListener("click", () => {copyToClipboard("P78250523")});
+
 		// Upload tab
 		this.uploadThumbnail = null;
 		this.uploadScript = null;
@@ -251,8 +331,9 @@ export class Opm {
 			}));
 		});
 		
-		document.getElementById("opm-header").addEventListener("click", () => {
-			this.element.classList.toggle("open");
+		document.getElementById("opm-header").addEventListener("click", e => {
+			if(e.layerX < 560) this.element.classList.toggle("open");
+			else if(e.layerX < 595) document.getElementById("opm-deposit-btn").click();
 		});
 		
 		OWOP.once(EVENTS.net.world.join, () => {
@@ -264,6 +345,8 @@ export class Opm {
 		fetch("https://opm.glitch.me/users/me", {
 			credentials: "include"
 		}).then(a => a.json()).then(user => {
+		    this.balance = user.balance;
+		    this.boughtScripts = user.boughtScripts;
 			this.installed = user.installed;
 			this.switchTab("packages");
 			this.loggedIn();
@@ -273,12 +356,13 @@ export class Opm {
 	}
 	
 	loggedIn() {
-		this.reloadPackages();
+        document.getElementById("opm-user-balance").innerText = this.balance;
+        this.reloadPackages();
 	}
 	
 	reloadPackages() {
 		fetch("https://opm.glitch.me/packages").then(a => a.json()).then(async packages => {
-			this.packages = packages.map(a => new PackageItem(a));
+			this.packages = packages.map(a => new PackageItem(a, this.boughtScripts));
 			for (let i=0; i<this.packages.length; i++) {
 				let pkg = this.packages[i];
 				if (!pkg.installed && this.installed.includes(pkg.name)) {
