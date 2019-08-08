@@ -84,6 +84,10 @@
 			<header id="opm-header">
 				<img src="<%=require('./img/opm-2.png')%>" />
 				<span class="title">OWOP Package Manager 2</span>
+                <div id="opm-bal">
+                    <span id="opm-user-balance">0</span>
+                    <button id="opm-deposit-btn">+</button>
+                </div>
 			</header>
 			<main id="opm-login-tab">
 				<button id="opm-login">Log in with Discord</button>
@@ -91,9 +95,26 @@
 			<main id="opm-packages-tab">
 				<ul id="opm-packages"></ul>
 			</main>
-			<main id="opm-details-tab">
-				
-			</main>
+			<main id="opm-details-tab"></main>
+            <main id="opm-deposit-tab">
+                <main>
+                    <span>You can exchange your money to Coins. 1 Coin = 0,01 dollar. With coins you can buy paid scripts.</span><br><br>
+                    <span>There's 2 supported paying systems: Qiwi and Payeer.</span><br>
+                    <span>Recommended currency for Qiwi: RUB, Payeer: USD. Actually, if you'll send (for example) RUB from Payeer, they will be handled normally anyway, but for totally safe transaction, better use recommended currencies. Cryptocurrencies like bitcoin in Payeer is NOT supported!</span><br>
+                    <br>
+                    <button id="opm-deposit-qiwi">Qiwi</button>
+                    <button id="opm-deposit-payeer">Payeer</button><br>
+                    <br><span>To deposit exchange money to coins, you'll need to send money to QIWI/Payeer wallet, and copy ID of transaction and paste it into input below and press Enter, and boom, you have your coins!</span><br>
+                    <br><i>To send money to Payeer you need to use this address: P78250523 <button id="opm-deposit-copy">Copy</button></i><br>
+                    <select id="opm-deposit-type">
+                        <option>qiwi</option>
+                        <option>payeer</option>
+                    </select>
+                    <input id="opm-deposit-input" placeholder="ID of transaction" width="300px">
+                    <span id="opm-deposit-status"></span>
+                    <button id="opm-deposit-back" onclick="OPM.switchTab('packages')">Back</button>
+                </main>
+            </main>
 			<main id="opm-upload-tab">
 				<main>
 					<div class="package">
@@ -109,6 +130,7 @@
 					<input id="opm-upload-categories" type="text" placeholder="Categories (comma separated)" />
 					<input id="opm-upload-dependencies" type="text" placeholder="Dependencies (comma separated)" />
 					<input id="opm-upload-script" type="file"></input>
+				    <span id="opm-upload-warn">Please, read the <a href="https://opm.glitch.me/docs">docs</a> before uploading scripts.</span>
 					<span id="opm-upload-status"></span>
 				</main>
 				<footer>
