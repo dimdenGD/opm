@@ -1,3 +1,11 @@
+/* General */
+
+#opm p {
+	margin-top: 0;
+}
+#opm a {
+	color: #52d6ff;
+}
 #opm button {
 	box-sizing: border-box;
 	border: 1px solid rgba(0, 0, 0, 0.5);
@@ -7,6 +15,30 @@
 	color: #fff;
 	text-shadow: 0 1px 0px #000;
 }
+#opm input,
+#opm textarea,
+#opm select {
+	margin-bottom: 8px;
+	padding: 4px;
+	background-color: #867050;
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	border-radius: 3px;
+	color: #fff;
+	font: 16px pixel-op, sans-serif;
+	transition: border-color 200ms;
+}
+#opm input::placeholder,
+#opm textarea::placeholder {
+	color: rgba(255, 255, 255, 0.5);
+}
+#opm input:focus,
+#opm textarea:focus,
+#opm select:focus {
+	outline: none;
+	border-color: #d8d8d8;
+}
+
+/* OPM container */
 
 #opm {
 	display: flex;
@@ -51,6 +83,27 @@
 	left: 0;
 	line-height: 32px;
 	text-align: center;
+	z-index: -1;
+}
+#opm-bal {
+	float: right;
+	font-size: 0;
+	display: none;
+}
+#opm.open #opm-bal {
+	display: block;
+}
+#opm-user-balance {
+	padding: 4px 8px;
+	background-color: #826771;
+	border: 1px solid rgba(0, 0, 0, 0.4);
+	border-right: none;
+	border-radius: 4px 0 0 4px;
+	font-size: 16px;
+}
+button#opm-deposit-btn {
+	background-color: #e0c35a;
+	padding: 7px 11px;
 }
 #opm > main {
 	display: none;
@@ -64,6 +117,8 @@
 #opm.upload > #opm-upload-tab { display: flex; }
 #opm.deposit > #opm-deposit-tab { display: flex; }
 
+/* Login */
+
 button#opm-login {
 	display: block;
 	width: 250px;
@@ -74,6 +129,10 @@ button#opm-login {
 	border-radius: 3px;
 	text-decoration: none;
 }
+
+/***********
+* Packages *
+***********/
 
 #opm-packages-tab {
 	overflow-y: scroll;
@@ -179,7 +238,10 @@ button#opm-login {
 	background-color: #73b551;
 }
 
-/* Upload */
+/*********
+* Upload *
+*********/
+
 #opm-upload-tab {
 	flex-direction: column;
 	padding: 8px;
@@ -194,26 +256,6 @@ button#opm-login {
 #opm-upload-tab > main > .package > .right {
 	flex: 1;
 	margin-left: 8px;
-}
-#opm-upload-tab input,
-#opm-upload-tab textarea {
-	margin-bottom: 8px;
-	padding: 4px;
-	background-color: #867050;
-	border: 1px solid rgba(0, 0, 0, 0.5);
-	border-radius: 3px;
-	color: #fff;
-	font: 16px pixel-op, sans-serif;
-	transition: border-color 200ms;
-}
-#opm-upload-tab input::placeholder,
-#opm-upload-tab textarea::placeholder {
-	color: rgba(255, 255, 255, 0.5);
-}
-#opm-upload-tab input:focus,
-#opm-upload-tab textarea:focus {
-	outline: none;
-	border-color: #d8d8d8;
 }
 #opm-upload-image {
 	position: relative;
@@ -265,8 +307,10 @@ button#opm-login {
 	width: 100%;
 	box-sizing: border-box;
 }
+#opm-upload-warn,
 #opm-upload-status {
 	display: block;
+	margin-bottom: 8px;
 	text-align: center;
 	font-size: 16px;
 	text-shadow: 0 1px 0 #000, 1px 0 0 #000, -1px 0 0 #000, 0 -1px 0 #000;
@@ -282,70 +326,26 @@ button#opm-login {
 	background-color: #d44a4a;
 }
 
-#opm-deposit-back {
-    position: absolute;
-    bottom: 15px;
-    left: 15px;
-}
-
 #opm-upload-upload {
 	float: right;
 	background-color: #4488dc;
 }
 
-#opm-bal {
-    float: right;
-    right: 20px;
-    border-radius: 3px;
-    background-color: #a88773;
-    padding-left: 3px;
-    margin-top: 3px;
-}
-
-#opm-deposit-btn {
-    background-color: #6fee87;
-    border: none;
-    border-radius: 0;
-    padding: 3px;
-    z-index: 10;
-}
-
-#opm-user-balance::before {
-content: "";
-display: inline-block;
-width: 16px;
-height: 20px;
-background-image: url(../img/coin.png);
-}
+/**********
+* Deposit *
+**********/
 
 #opm-deposit-tab {
-    flex-direction: column;
-    padding: 8px;
+	flex-direction: column;
+	padding: 8px;
 }
 #opm-deposit-tab > main {
-    flex: 1;
+	flex: 1;
 }
 
-#opm-deposit-tab input,
-#opm-deposit-tab textarea,
-#opm-deposit-tab select {
-    margin-bottom: 8px;
-    padding: 4px;
-    background-color: #867050;
-    border: 1px solid rgba(0, 0, 0, 0.5);
-    border-radius: 3px;
-    color: #543f27;
-    font: 16px pixel-op, sans-serif;
-    transition: border-color 200ms;
+#opm-deposit-qiwi {
+	background-color: #ff8d00;
 }
-
-#opm-deposit-tab input::placeholder {
-    color: #543f27;
-}
-
-#opm-upload-warn {
-	display: block;
-    text-align: center;
-    font-size: 16px;
-    text-shadow: 0 1px 0 #000, 1px 0 0 #000, -1px 0 0 #000, 0 -1px 0 #000;
+#opm-deposit-payeer {
+	background-color: #0095d8;
 }
