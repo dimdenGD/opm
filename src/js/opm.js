@@ -165,6 +165,19 @@ export class PackageItem {
 	}
 	
 	uninstall() {
+		let dependents = [];
+		OPM.packages.forEach(pkg => {
+			if (!pkg.dependencies.includes(this.name)) return;
+			if (!pkg.installed) return;
+			
+			dependents.push(pkg.name);
+		});
+		
+		if (dependents.length) {
+			alert("This library is being used by other packages. Please uninstall them first: " + dependents.join(", "));
+			return;
+		}
+		
 		this.setInstalled(false);
 		this.downloads--;
 		this.downloadIndicator.textContent = this.downloads;
