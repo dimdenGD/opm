@@ -94,8 +94,8 @@ export class PackageItem {
 						
 						this.bought = true;
 						this.setInstalled(false);
-						OPM.balance -= this.cost;
-						document.getElementById("opm-user-balance").textContent = OPM.balance;
+						OPM.user.balance -= this.cost;
+						document.getElementById("opm-user-balance").textContent = OPM.user.balance;
 					});
 				}
 				return;
@@ -154,7 +154,7 @@ export class PackageItem {
 		}
 		
 		this.setInstalled(true);
-		if (!OPM.installed.includes(this.name)) {
+		if (!OPM.user.installed.includes(this.name)) {
 			this.downloads++;
 			this.downloadIndicator.textContent = this.downloads;
 			fetch(`https://opm.glitch.me/packages/${this.name}/install`, {credentials: "include"});
@@ -171,7 +171,7 @@ export class PackageItem {
 		
 		this.module.uninstall();
 		this.installed = false;
-		OPM.installed.splice(OPM.installed.indexOf(this.name), 1);
+		OPM.user.installed.splice(OPM.user.installed.indexOf(this.name), 1);
 		fetch(`https://opm.glitch.me/packages/${this.name}/uninstall`, {credentials: "include"});
 	}
 }
@@ -179,7 +179,6 @@ export class PackageItem {
 export class Opm {
 	constructor() {
 		this.packages = [];
-		this.installed = [];
 		this.element = document.getElementById("opm");
 		this.tab = "login";
 
@@ -348,9 +347,7 @@ export class Opm {
 		fetch("https://opm.glitch.me/users/me", {
 			credentials: "include"
 		}).then(a => a.json()).then(user => {
-			this.balance = user.balance;
-			this.boughtScripts = user.boughtScripts;
-			this.installed = user.installed;
+			this.user = user;
 			this.switchTab("packages");
 			this.loggedIn();
 		}).catch(() => {
@@ -359,16 +356,16 @@ export class Opm {
 	}
 	
 	loggedIn() {
-		document.getElementById("opm-user-balance").textContent = this.balance;
+		document.getElementById("opm-user-balance").textContent = this.user.balance;
 		this.reloadPackages();
 	}
 	
 	reloadPackages() {
 		fetch("https://opm.glitch.me/packages").then(a => a.json()).then(async packages => {
-			this.packages = packages.map(a => new PackageItem(a, this.boughtScripts.includes(a.name)));
+			this.packages = packages.map(a => new PackageItem(a, this.user.boughtScripts.includes(a.name)));
 			for (let i=0; i<this.packages.length; i++) {
 				let pkg = this.packages[i];
-				if (!pkg.installed && this.installed.includes(pkg.name)) {
+				if (!pkg.installed && this.user.installed.includes(pkg.name)) {
 					await pkg.install();
 				}
 			}
