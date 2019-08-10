@@ -15,7 +15,7 @@ const config = {
 	output: {
 		filename: '[name].js',
 		path: path.resolve(__dirname, 'dist/ourworldofpixels.com'),
-		publicPath: "/" // "https://opm.glitch.me/client/"
+		publicPath: "/"
 	},
 	devServer: {
 		contentBase: false,
@@ -113,7 +113,9 @@ module.exports = async env => {
 		config.devtool = "source-map";
 	} else {
 		config.mode = "production";
-		config.output.filename = '[name].[hash].js';
+		config.output.path = path.resolve(__dirname, '../public/client');
+		config.output.publicPath = "https://opm.glitch.me/client/";
+		//config.output.filename = '[name].[hash].js';
 		console.log(`Cleaning build dir: '${config.output.path}'`);
 		await fs.remove(config.output.path);
 	}
