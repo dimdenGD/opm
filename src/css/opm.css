@@ -149,6 +149,7 @@ button#opm-login {
 	background-color: #caa87a;
 	border: 1px solid rgba(0, 0, 0, 0.5);
 	border-radius: 4px;
+	overflow: hidden;
 	cursor: pointer;
 	transition: background-color 200ms;
 }
