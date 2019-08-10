@@ -9,6 +9,7 @@ const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const srcDir = path.resolve(__dirname, 'src');
 
 const config = {
+	devtool: "source-map",
 	entry: {
 		app: ["babel-polyfill", path.resolve(srcDir, 'js', 'main.js')]
 	},
@@ -110,7 +111,6 @@ module.exports = async env => {
 	env = env || {};
 	if (!env.release) {
 		config.mode = "development";
-		config.devtool = "source-map";
 	} else {
 		config.mode = "production";
 		config.output.path = path.resolve(__dirname, '../public/client');
