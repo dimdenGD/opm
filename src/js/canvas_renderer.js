@@ -22,6 +22,8 @@ const cameraValues = {
 export const camera = {
 	get x() { return cameraValues.x; },
 	get y() { return cameraValues.y; },
+	set x(Z) { return cameraValues.x = Z },
+	set y(Z) { return cameraValues.y = Z },
 	get zoom() { return cameraValues.zoom; },
 	/*get lerpZoom() { return cameraValues.lerpZoom.val; },*/
 	set zoom(z) {
