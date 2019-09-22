@@ -4,7 +4,8 @@ var shown = false;
 var contextMenu = document.createElement("div");
 contextMenu.className = "context-menu";
 
-function removeMenu(event) {
+function removeMenu(event, time) {
+		if(Date.now()-time <= 10) return;
 		document.body.removeChild(contextMenu);
 		document.removeEventListener("click", removeMenu);
 		shown = false;
@@ -23,6 +24,7 @@ export function createContextMenu(x, y, buttons) {
 		contextMenu.appendChild(button);
 	}
 	document.body.appendChild(contextMenu);
+	var time = Date.now();
 	shown = true;
 	var height = contextMenu.offsetHeight;
 	console.log(height);
@@ -33,5 +35,5 @@ export function createContextMenu(x, y, buttons) {
 	}
 	contextMenu.style.left = x + "px";
 
-	document.addEventListener("click", removeMenu);
+	document.addEventListener("click", e => {removeMenu(e, time)});
 }
